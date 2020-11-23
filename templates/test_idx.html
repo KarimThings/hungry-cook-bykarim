@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Food Mood</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- home container id starts -->
+<div id="home-container">
+  <div class="hamburger">
+    <div class="hamburger__container">
+      <span class="hamburger__top"></span>
+      <span class="hamburger__middle"></span>
+      <span class="hamburger__bottom"></span>
+    </div>
+  </div>
+  <div class="menu">
+    <div class="menu__container bg-white">
+      <nav class="menu__nav">
+        <ul class="menu__list">
+          <li class="menu__item js-span">Follow me on:</li>
+          <li class="menu__item">
+            <a class="menu__link" href="https://twitter.com/KarimTheMasri" target="_blank">Twitter</a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__link" href="https://www.linkedin.com/in/karimhenry/" target="_blank">LinkedIn</a>
+          </li>
+        </ul>
+        </nav>
+
+        </nav>
+          <div class="menu__sidebar">
+            <div class="menu__flip">
+              <div class="menu__copy">
+                <span>Checkout my portfolio website:</span>
+                <span><a class="menu__external" href="https://sites.google.com/view/karimthings/home" target="_blank" rel="noopener noreferrer">sites.google.com/view/karimthings/home</a></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="menu__img bg-black">
+          <img src="images/bronsolino.svg" alt="solino" id="menu__img">
+        </div>
+</div>
+    <!-- inner sub id starts -->
+        <div class="restaurant">
+            <img src="images/bronson.svg" alt="Bronson logo" id="logo">
+            <h1>Get in the Mood for Food!</h1>
+            <p class="subtitle">Name Your Go-To Restaurant</p>
+            <form action="{{ url_for('main') }} method="POST">
+              <input type="text" id="restaurant_name" name="restaurant_name" placeholder="Bon Apetite *chefs kiss*" required/>
+              <input type="submit" id="submission_button" value="Submit"/>
+            </form>
+        </div>
+        <!-- inner sub id ends -->
+
+        <!-- illustration sub id starts -->
+        <div id="illustration">
+            <img src="images/drake.svg" alt="drake img" id="drake" class="rap-icons">
+            <img src="images/biggie.svg" alt="biggie img" id="biggie" class="rap-icons">
+            <img src="images/lil_wayne.svg" alt="weezy img" id="weezy" class="rap-icons">
+            <img src="images/yeezy.svg" alt="yeezy img" id="rap-icons" class="rap-icons">
+            <img src="images/lasagna.svg" alt="garfield img" id="lasagna">
+        </div>
+        <!-- illustration sub id ends -->
+    </div>
+    <!-- home container id ends -->
+    <script src='https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js'></script>
+<script>
+// Menu
+const Menu = (() => {
+  let s;
+
+  return {
+    settings() {
+      return {
+        body: $('body'),
+        hamburger: $('.hamburger'),
+        open: 'js-menu-open',
+        visible: 'js-menu-visible',
+        overflow: 'js-overflow',
+        width: $(window).width(),
+        prevWidth: $(window).width() };
+
+    },
+
+    init() {
+      s = this.settings();
+      this.bindEvents();
+    },
+
+    bindEvents() {
+      let menuContainerWidth;
+
+      if (s.width < 864) {
+        menuContainerWidth = 100;
+      } else if (s.width < 1456) {
+        menuContainerWidth = 50;
+      } else {
+        menuContainerWidth = 45;
+      }
+
+      $(window).on('resize', () => {
+        s.width = $(window).width();
+
+        if (s.width < 864) {
+          menuContainerWidth = 100;
+        } else if (s.width < 1456) {
+          menuContainerWidth = 50;
+        } else {
+          menuContainerWidth = 45;
+        }
+      });
+
+      s.hamburger.on('click', () => {
+        Menu.toggleMenu(menuContainerWidth);
+      });
+
+      s.body.on('keyup', e => {
+        if (s.body.hasClass(s.open) && e.which === 27) {
+          Menu.toggleMenu(menuContainerWidth);
+        }
+      });
+    },
+
+    toggleMenu(width) {
+      s.hamburger.toggleClass('js-hamburger');
+      s.body.toggleClass(s.open);
+      s.body.toggleClass(s.overflow);
+
+      // Opening transition
+      if (s.body.hasClass(s.open)) {
+        s.prevWidth = width;
+
+        anime.timeline({
+          easing: 'easeOutQuart',
+          duration: 600,
+          begin() {
+            $('.menu__img').css('left', `${width}%`);
+            s.body.addClass(s.visible);
+          } }).
+
+        add({
+          targets: '.menu__container',
+          width: [0, `${width}%`] }).
+
+        add({
+          targets: '.menu__img',
+          width: [0, `${100 - width}%`] },
+        0);
+      }
+
+      // Closing transition
+      if (!s.body.hasClass(s.open)) {
+        anime.timeline({
+          easing: 'easeInQuart',
+          duration: 600,
+          delay: 200,
+          complete() {
+            s.body.removeClass(s.visible);
+          } }).
+
+        add({
+          targets: '.menu__container',
+          width: [`${s.prevWidth}%`, 0] }).
+
+        add({
+          targets: '.menu__img',
+          width: [`${100 - s.prevWidth}%`, 0] },
+        0);
+      }
+    } };
+
+})();
+
+// Inits
+$(() => {
+  // Spanize
+  const span = $('.js-span');
+  let $ele, words;
+
+  for (let i = 0; i < span.length; i++) {
+    $ele = $(span).eq(i);
+    words = $ele.html();
+
+    $ele.html(words.replace(/([A-z0-9'@+-<>.,'"“”‘’?!*&/]+)/g, '<span>$&</span>'));
+  }
+
+  Menu.init();
+});
+</script>
+</body>
+</html>
